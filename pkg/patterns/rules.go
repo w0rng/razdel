@@ -1,7 +1,7 @@
 package patterns
 
 import (
-	"razdel/pkg/set"
+	"razdel/internal/set"
 	"regexp"
 )
 
