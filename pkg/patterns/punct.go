@@ -1,20 +1,18 @@
 package patterns
 
-import "regexp"
-
 const (
-	Endings       = ".?!…"  // Завершающие символы
-	Dashes        = "‑–—−-" // Тире
-	OpenQuotes    = "«“‘"   // Открывающие кавычки
-	CloseQuotes   = "»”’"   // Закрывающие кавычки
-	GenericQuotes = "\"„'"  // Универсальные кавычки
-	OpenBrackets  = "([{"   // Открывающие скобки
-	CloseBrackets = ")]}"   // Закрывающие скобки
+	ENDINGS        = ".?!…"  // Завершающие символы
+	DASHES         = "‑–—−-" // Тире
+	OPEN_QUOTES    = "«“‘"   // Открывающие кавычки
+	CLOSE_QUOTES   = "»”’"   // Закрывающие кавычки
+	GENERIC_QUOTES = "\"„'"  // Универсальные кавычки
+	OPEN_BRACKETS  = "([{"   // Открывающие скобки
+	CLOSE_BRACKETS = ")]}"   // Закрывающие скобки
 )
 
 var (
-	Quotes    = OpenQuotes + CloseQuotes + GenericQuotes // Все кавычки
-	Brackets  = OpenBrackets + CloseBrackets             // Все скобки
-	Bounds    = Quotes + Brackets                        // Ограничивающие символы
-	SmilesReg = regexp.MustCompile(`[=:;]-?[)(]{1,3}`)   // Регулярное выражение для смайлов
+	QUOTES   = OPEN_QUOTES + CLOSE_QUOTES + GENERIC_QUOTES // Все кавычки
+	BRACKETS = OPEN_BRACKETS + CLOSE_BRACKETS              // Все скобки
+	BOUNDS   = QUOTES + BRACKETS                           // Ограничивающие символы
+	SMILES   = `[=:;]-?[)(]{1,3}`                          // Регулярное выражение для смайлов
 )
