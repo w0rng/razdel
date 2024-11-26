@@ -10,6 +10,18 @@ func parseSokrs(lines []string) []string {
 	return strings.Fields(joinedLines)
 }
 
+func parsePairSokrs(lines []string) [][2]string {
+	pairs := make([][2]string, 0, len(lines))
+	for _, line := range lines {
+		parts := strings.SplitN(line, " ", 2)
+		if len(parts) != 2 {
+			continue
+		}
+		pairs = append(pairs, [2]string{parts[0], parts[1]})
+	}
+	return pairs
+}
+
 var TAIL_SOKRS = set.New(parseSokrs([]string{
 	"дес тыс млн млрд",
 	"дол долл",
@@ -102,3 +114,46 @@ var OTHER_SOKRS = set.New(parseSokrs([]string{
 }))
 
 var SOKRS = TAIL_SOKRS.Add(HEAD_SOKRS).Add(OTHER_SOKRS)
+
+var TAIL_PAIR_SOKRS = set.New(parsePairSokrs([]string{
+	"т п",
+	"т д",
+	"у е",
+	"н э",
+	"p m",
+	"a m",
+	"с г", // от 18 мая с. г.
+	"р х", // 250 года до Р. Х.
+	"с г", // 18 мая с. г.
+	"с ш", // 50°13′ с. ш.
+	"з д", // 12°48′ з. д.
+	"л с",
+	"ч т", "т д", // ч.т.д
+}))
+
+var HEAD_PAIR_SOKRS = set.New(parsePairSokrs([]string{
+	"т е",
+	"т к",
+	"т н",
+	"и о",
+	"к н",
+	"к п", "п н", // к.п.н
+	"к т", "т н", // к.т.н
+	"л д", // т. 1 л.д. 85-89
+}))
+
+var OTHER_PAIR_SOKRS = set.New(parsePairSokrs([]string{
+	"ед ч",
+	"мн ч",
+	"повел накл", // в 1 лице мн. ч. повел. накл.
+	"жен р",
+	"муж р",
+}))
+
+var PAIR_SOKRS = TAIL_PAIR_SOKRS.Add(HEAD_PAIR_SOKRS).Add(OTHER_PAIR_SOKRS)
+
+var INITIALS = set.New([]string{
+	"дж",
+	"ed",
+	"вс", // Вс. Мейерхольда
+})
