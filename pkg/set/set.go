@@ -16,10 +16,14 @@ func New[T comparable](els []T) Set[T] {
 }
 
 func (s Set[T]) Add(set Set[T]) Set[T] {
+	result := make(Set[T])
 	for elem := range set {
-		s[elem] = struct{}{}
+		result[elem] = struct{}{}
 	}
-	return s
+	for elem := range s {
+		result[elem] = struct{}{}
+	}
+	return result
 }
 
 func (s Set[T]) String() string {

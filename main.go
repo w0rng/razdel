@@ -6,5 +6,6 @@ import (
 )
 
 func main() {
-	fmt.Println(patterns.SOKRS)
+	fmt.Println(len(patterns.SOKRS))
+	fmt.Println(len(patterns.TAIL_SOKRS))
 }
