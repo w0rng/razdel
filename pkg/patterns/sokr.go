@@ -6,13 +6,8 @@ import (
 )
 
 func parseSokrs(lines []string) []string {
-	var res []string
-	for _, line := range lines {
-		for _, word := range strings.Split(line, " ") {
-			res = append(res, word)
-		}
-	}
-	return res
+	joinedLines := strings.Join(lines, " ")
+	return strings.Fields(joinedLines)
 }
 
 var TAIL_SOKRS = set.New(parseSokrs([]string{
