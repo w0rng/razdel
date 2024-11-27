@@ -14,83 +14,41 @@ type SentSplitter struct {
 
 // NewSentSplitter создает новый экземпляр SentSplitter.
 // Если не указаны параметры, используются значения по умолчанию.
-func NewSplitter(pattern string, window int) (*SentSplitter, error) {
+func NewSplitter(pattern string, window int) SentSplitter {
 	if pattern == "" {
 		pattern = patterns.DELIMITER
 	}
 	if window == 0 {
 		window = 10
 	}
-	re, err := regexp.Compile(pattern)
-	if err != nil {
-		return nil, err
-	}
-	return &SentSplitter{
+	re := regexp.MustCompile(pattern)
+	return SentSplitter{
 		Pattern: pattern,
 		Window:  window,
 		re:      re,
-	}, nil
+	}
 }
 
-// Split разбивает текст на части и возвращает массив строк и SentSplit.
-func (s *SentSplitter) Split(text string) []interface{} {
-	matches := s.re.FindAllStringSubmatchIndex(text, -1)
+// Split разбивает текст на части.
+func (s SentSplitter) Split(text string) []Token {
+	matches := s.re.FindAllStringIndex(text, -1)
 	if matches == nil {
-		return []interface{}{text} // Если совпадений нет, вернуть весь текст как есть.
+		return []Token{{Left: text}}
 	}
 
-	var result []interface{}
-	previous := 0
-
+	var splits []Token
+	prevIndex := 0
 	for _, match := range matches {
-		start := match[0] // Начало совпадения
-		stop := match[1]  // Конец совпадения
+		left := text[prevIndex:match[0]]
+		delimiter := text[match[0]:match[1]]
+		prevIndex = match[1]
 
-		// Текст до разделителя
-		if previous < start {
-			result = append(result, text[previous:start])
+		right := ""
+		if prevIndex < len(text) {
+			right = text[prevIndex:]
 		}
 
-		// Контекст вокруг разделителя
-		leftStart := max(0, start-s.Window)
-		rightEnd := min(len(text), stop+s.Window)
-
-		left := text[leftStart:start]
-		right := text[stop:rightEnd]
-
-		delimiter := ""
-		if len(match) >= 4 {
-			delimiter = text[match[2]:match[3]] // Первая группа, если есть
-		}
-
-		result = append(result, SentSplit{
-			Left:      left,
-			Delimiter: delimiter,
-			Right:     right,
-		})
-
-		previous = stop
+		splits = append(splits, Token{Left: left, Delimiter: delimiter, Right: right})
 	}
-
-	// Добавить остаток текста
-	if previous < len(text) {
-		result = append(result, text[previous:])
-	}
-
-	return result
-}
-
-// Вспомогательные функции для работы с границами.
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
+	return splits
 }
