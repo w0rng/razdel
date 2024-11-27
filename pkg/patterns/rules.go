@@ -24,4 +24,13 @@ var BULLET_SIZE = 20
 var DELIMITERS = ENDINGS.Add(GENERIC_QUOTES).Add(CLOSE_QUOTES).Add(CLOSE_BRACKETS).Add(set.New([]string{";"}))
 var SMILE_PREFIX = regexp.MustCompile(`^\s*` + SMILES)
 
-var DELIMITER = fmt.Sprintf("(%s|[%s])", SMILES, regexp.QuoteMeta(DELIMITERS.ToLine()))
+var DELIMITER = fmt.Sprintf("(%s|[%s])", SMILES, regexp.QuoteMeta(setToString(DELIMITERS)))
+
+func setToString[T comparable](s set.Set[T]) string {
+	result := ""
+	for e := range s {
+		result += fmt.Sprintf("%v", e)
+	}
+
+	return result
+}
