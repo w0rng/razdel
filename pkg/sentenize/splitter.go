@@ -36,19 +36,25 @@ func (s SentSplitter) Split(text string) []Token {
 		return []Token{{Left: text}}
 	}
 
-	var splits []Token
+	splits := make([]Token, 0, len(matches))
+
 	prevIndex := 0
 	for _, match := range matches {
-		left := text[prevIndex:match[0]]
-		delimiter := text[match[0]:match[1]]
-		prevIndex = match[1]
-
-		right := ""
-		if prevIndex < len(text) {
-			right = text[prevIndex:]
+		start, end := match[0], match[1]
+		left := text[prevIndex:start]
+		delimiter := text[start:end]
+		if len(splits) > 0 {
+			splits[len(splits)-1].Right = text[prevIndex:start]
 		}
+		prevIndex = end
 
-		splits = append(splits, Token{Left: left, Delimiter: delimiter, Right: right})
+		splits = append(splits, Token{Left: left, Delimiter: delimiter})
 	}
+
+	if remains := text[prevIndex:]; remains != "" {
+		splits[len(splits)-1].Right = remains
+		splits = append(splits, Token{Left: remains})
+	}
+
 	return splits
 }

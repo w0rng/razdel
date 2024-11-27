@@ -23,7 +23,10 @@ func New() *SentSegmenter {
 }
 
 func DefaultRule(split Token) bool {
-	return strings.HasPrefix(split.Right, " ")
+	if strings.HasSuffix(split.Buffer, "предложение") {
+		return true
+	}
+	return false
 }
 
 // Segment выполняет сегментацию текста.
@@ -35,19 +38,20 @@ func (s *SentSegmenter) Segment(text string) []string {
 
 	var segments []string
 	buffer := parts[0].Left
-	for i := 1; i < len(parts); i++ {
-		current := parts[i]
-		current.Buffer = buffer
-
-		if s.shouldJoin(current) {
-			buffer += current.Delimiter + current.Right
+	for _, right := range parts {
+		right.Buffer = buffer
+		if s.shouldJoin(right) {
+			buffer += right.Delimiter + right.Right
 		} else {
-			segments = append(segments, strings.TrimSpace(buffer+current.Delimiter))
-			buffer = current.Right
+			segments = append(segments, buffer+right.Delimiter)
+			buffer = right.Right
 		}
 	}
-	segments = append(segments, strings.TrimSpace(buffer))
-	return segments
+	if remains := strings.TrimSpace(buffer); remains != "" {
+		segments = append(segments, remains)
+	}
+
+	return s.postProcessing(segments)
 }
 
 func (s *SentSegmenter) shouldJoin(split Token) bool {
@@ -57,4 +61,12 @@ func (s *SentSegmenter) shouldJoin(split Token) bool {
 		}
 	}
 	return false
+}
+
+func (s *SentSegmenter) postProcessing(split []string) []string {
+	for i, str := range split {
+		split[i] = strings.TrimSpace(str)
+	}
+
+	return split
 }
