@@ -1,6 +1,7 @@
 package patterns
 
 import (
+	"fmt"
 	"razdel/internal/set"
 	"regexp"
 )
@@ -22,3 +23,5 @@ var BULLET_SIZE = 20
 
 var DELIMITERS = ENDINGS + `;` + GENERIC_QUOTES + CLOSE_QUOTES + CLOSE_BRACKETS
 var SMILE_PREFIX = regexp.MustCompile(`^\s*` + SMILES)
+
+var DELIMITER = fmt.Sprintf("(%s|[%s])", SMILES, regexp.QuoteMeta(DELIMITERS))
