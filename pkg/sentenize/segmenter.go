@@ -1,10 +1,13 @@
 package sentenize
 
 import (
+	"fmt"
+	"reflect"
+	"runtime"
 	"strings"
 )
 
-type Rule func(Token) bool
+type Rule = func(Token) bool
 
 type Splitter interface {
 	Split(string) []Token
@@ -18,15 +21,8 @@ type SentSegmenter struct {
 func New() *SentSegmenter {
 	return &SentSegmenter{
 		Splitter: NewSplitter("", 0),
-		Rules:    []Rule{DefaultRule},
+		Rules:    RULES,
 	}
-}
-
-func DefaultRule(split Token) bool {
-	if strings.HasSuffix(split.Buffer, "предложение") {
-		return true
-	}
-	return false
 }
 
 // Segment выполняет сегментацию текста.
@@ -57,6 +53,7 @@ func (s *SentSegmenter) Segment(text string) []string {
 func (s *SentSegmenter) shouldJoin(split Token) bool {
 	for _, rule := range s.Rules {
 		if rule(split) {
+			fmt.Println(getFunctionName(rule), rule(split))
 			return true
 		}
 	}
@@ -69,4 +66,8 @@ func (s *SentSegmenter) postProcessing(split []string) []string {
 	}
 
 	return split
+}
+
+func getFunctionName(f interface{}) string {
+	return runtime.FuncForPC(runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Entry()).Name()
 }

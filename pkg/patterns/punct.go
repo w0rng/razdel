@@ -1,18 +1,20 @@
 package patterns
 
-const (
-	ENDINGS        = ".?!…"  // Завершающие символы
-	DASHES         = "‑–—−-" // Тире
-	OPEN_QUOTES    = "«“‘"   // Открывающие кавычки
-	CLOSE_QUOTES   = "»”’"   // Закрывающие кавычки
-	GENERIC_QUOTES = "\"„'"  // Универсальные кавычки
-	OPEN_BRACKETS  = "([{"   // Открывающие скобки
-	CLOSE_BRACKETS = ")]}"   // Закрывающие скобки
+import "razdel/internal/set"
+
+var (
+	ENDINGS        = set.New([]string{".", "?", "!", "…"})      // Завершающие символы
+	DASHES         = set.New([]string{"‑", "–", "—", "−", "-"}) // Тире
+	OPEN_QUOTES    = set.New([]string{"«", "“", "‘"})           // Открывающие кавычки
+	CLOSE_QUOTES   = set.New([]string{"»", "”", "’"})           // Закрывающие кавычки
+	GENERIC_QUOTES = set.New([]string{"\"", "„", "'"})          // Универсальные кавычки
+	OPEN_BRACKETS  = set.New([]string{"(", "[", "{"})           // Открывающие скобки
+	CLOSE_BRACKETS = set.New([]string{")", "]", "}"})           // Закрывающие скобки
 )
 
 var (
-	QUOTES   = OPEN_QUOTES + CLOSE_QUOTES + GENERIC_QUOTES // Все кавычки
-	BRACKETS = OPEN_BRACKETS + CLOSE_BRACKETS              // Все скобки
-	BOUNDS   = QUOTES + BRACKETS                           // Ограничивающие символы
-	SMILES   = `[=:;]-?[)(]{1,3}`                          // Регулярное выражение для смайлов
+	QUOTES   = OPEN_QUOTES.Add(CLOSE_QUOTES).Add(GENERIC_QUOTES) // Все кавычки
+	BRACKETS = OPEN_BRACKETS.Add(CLOSE_BRACKETS)                 // Все скобки
+	BOUNDS   = QUOTES.Add(BRACKETS)                              // Ограничивающие символы
+	SMILES   = `[=:;]-?[)(]{1,3}`                                // Регулярное выражение для смайлов
 )

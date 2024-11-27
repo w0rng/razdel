@@ -1,6 +1,7 @@
 package sentenize
 
 import (
+	"fmt"
 	"razdel/pkg/patterns"
 	"regexp"
 )
@@ -55,6 +56,8 @@ func (s SentSplitter) Split(text string) []Token {
 		splits[len(splits)-1].Right = remains
 		splits = append(splits, Token{Left: remains})
 	}
+
+	fmt.Println(splits)
 
 	return splits
 }

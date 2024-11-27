@@ -18,10 +18,10 @@ var INT_SOKR = regexp.MustCompile(`\d+\s*-?\s*(\w+)\s*$`)
 
 var ROMAN = regexp.MustCompile(`^[IVXML]+$`)
 var BULLET_CHARS = set.New([]string{"§", "а", "б", "в", "г", "д", "е", "a", "b", "c", "d", "e", "f"})
-var BULLET_BOUNDS = ".)"
+var BULLET_BOUNDS = set.New([]string{".", ")"})
 var BULLET_SIZE = 20
 
-var DELIMITERS = ENDINGS + `;` + GENERIC_QUOTES + CLOSE_QUOTES + CLOSE_BRACKETS
+var DELIMITERS = ENDINGS.Add(GENERIC_QUOTES).Add(CLOSE_QUOTES).Add(CLOSE_BRACKETS).Add(set.New([]string{";"}))
 var SMILE_PREFIX = regexp.MustCompile(`^\s*` + SMILES)
 
-var DELIMITER = fmt.Sprintf("(%s|[%s])", SMILES, regexp.QuoteMeta(DELIMITERS))
+var DELIMITER = fmt.Sprintf("(%s|[%s])", SMILES, regexp.QuoteMeta(DELIMITERS.ToLine()))
